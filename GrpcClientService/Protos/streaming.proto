@@ -1,0 +1,17 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Protos.Streaming";
+
+package streaming;
+
+service StreamingService {
+	rpc ServerStreaming (ServerStreamRequest) returns (stream ServerStreamResponse);
+}
+
+message ServerStreamRequest {
+	string name = 1;
+}
+
+message ServerStreamResponse {
+	string message = 1;
+}

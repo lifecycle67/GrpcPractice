@@ -7,9 +7,18 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
             <TextBox x:Name="name" Text="HI" Width="150"/>
             <Button Content="call greet" Width="100" Margin="10 0 0 0" Click="Button_Click"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 10 0 0">
+            <ListBox x:Name="Responses" Width="310" Height="300"/>
+            <Button Content="call server stream" Margin="10 0 0 0"  Click="Button_Click_1" VerticalAlignment="Top"/>
         </StackPanel>
     </Grid>
 </Window>
