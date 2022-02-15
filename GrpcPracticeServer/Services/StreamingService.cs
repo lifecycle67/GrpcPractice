@@ -4,9 +4,9 @@ using static Protos.Streaming.StreamingService;
 
 namespace GrpcPracticeServer.Services
 {
-    public class ServerStreamingService : StreamingServiceBase
+    public class StreamingService : StreamingServiceBase
     {
-        public ServerStreamingService() { }
+        public StreamingService() { }
 
         public override async Task ServerStreaming(
             ServerStreamRequest request, 
@@ -25,6 +25,19 @@ namespace GrpcPracticeServer.Services
                     });
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }
+        }
+
+        public override async Task<ClientStreamResponse> ClientStreaming(
+           IAsyncStreamReader<ClientStreamRequest> requestStream,
+           ServerCallContext context)
+        {
+            //var caller = requestStream.Current.Caller;
+            while (await requestStream.MoveNext())
+            {
+                ClientStreamRequest request = requestStream.Current;
+                Console.WriteLine(request.Caller + " " + request.Message);
+            }
+            return new ClientStreamResponse { Message = $"Done" };
         }
     }
 }

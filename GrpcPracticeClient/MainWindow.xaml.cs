@@ -2,6 +2,9 @@
 using Grpc.Net.Client;
 using Protos.Greet;
 using Protos.Streaming;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using static Protos.Greet.Greeter;
 using static Protos.Streaming.StreamingService;
@@ -48,6 +51,23 @@ namespace GrpcPracticeClient
             {
                 Responses.Items.Add(response.Message);
             }
+        }
+
+        private async void ClientStreamButton_Click(object sender, RoutedEventArgs e)
+        {
+            var client = new StreamingServiceClient(_channel);
+
+            using var call = client.ClientStreaming(header);
+
+            for (var i = 0; i < 10; i++)
+            {
+                await call.RequestStream.WriteAsync(new ClientStreamRequest { Caller = name.Text, Message = DateTime.Now.ToString() });
+                await Task.Delay(1000);
+            }
+            await call.RequestStream.CompleteAsync();
+
+            var response = await call;
+            MessageBox.Show(response.Message);
         }
     }
 }

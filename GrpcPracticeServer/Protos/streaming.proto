@@ -6,6 +6,7 @@ package streaming;
 
 service StreamingService {
 	rpc ServerStreaming (ServerStreamRequest) returns (stream ServerStreamResponse);
+	rpc ClientStreaming (stream ClientStreamRequest) returns (ClientStreamResponse);
 }
 
 message ServerStreamRequest {
@@ -13,5 +14,14 @@ message ServerStreamRequest {
 }
 
 message ServerStreamResponse {
+	string message = 1;
+}
+
+message ClientStreamRequest {
+	string caller = 1;
+	string message = 2;
+}
+
+message ClientStreamResponse {
 	string message = 1;
 }
