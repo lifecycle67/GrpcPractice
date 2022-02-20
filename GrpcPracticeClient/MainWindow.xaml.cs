@@ -57,7 +57,7 @@ namespace GrpcPracticeClient
         {
             var client = new StreamingServiceClient(_channel);
 
-            using var call = client.ClientStreaming(header);
+            using var call = client.ClientStreaming();
 
             for (var i = 0; i < 10; i++)
             {
