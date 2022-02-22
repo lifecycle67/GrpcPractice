@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.1.46" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GrpcClientService\GrpcClientService.csproj" />
   </ItemGroup>
 

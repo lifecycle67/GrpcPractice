@@ -39,5 +39,23 @@ namespace GrpcPracticeServer.Services
             }
             return new ClientStreamResponse { Message = $"Done" };
         }
+
+        public override async Task BiStreaming(IAsyncStreamReader<BiStreamingRequest> requestStream, IServerStreamWriter<BiStreamingResponse> responseStream, ServerCallContext context)
+        {
+            var readTask = Task.Run(async () =>
+            {
+                await foreach (var message in requestStream.ReadAllAsync())
+                {
+                    Console.WriteLine("Received : " + message.Message);
+                }
+            });
+
+            while (!readTask.IsCompleted)
+            {
+                Console.WriteLine("send");
+                await responseStream.WriteAsync(new BiStreamingResponse { Message = "BiStreaming response" });
+                await Task.Delay(TimeSpan.FromSeconds(1));
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
+using Microsoft.VisualStudio.Threading;
 using Protos.Greet;
 using Protos.Streaming;
 using System;
@@ -17,6 +18,7 @@ namespace GrpcPracticeClient
     public partial class MainWindow : Window
     {
         GrpcChannel _channel;
+        AsyncManualResetEvent _resetEvent = new AsyncManualResetEvent(false);
 
         public MainWindow()
         {
@@ -68,6 +70,40 @@ namespace GrpcPracticeClient
 
             var response = await call;
             MessageBox.Show(response.Message);
+        }
+
+        private async void BiStreamButton_Click(object sender, RoutedEventArgs e)
+        {
+            var client = new StreamingServiceClient(_channel);
+
+            using var call = client.BiStreaming();
+
+            var readTask = Task.Run(async () =>
+            {
+                await foreach (var response in call.ResponseStream.ReadAllAsync())
+                {
+                    Dispatcher.Invoke(() => Responses.Items.Add(response.Message));
+                }
+            });
+
+            int count = 0;
+            while (count < 3)
+            {
+                await _resetEvent.WaitAsync();
+                await call.RequestStream.WriteAsync(new BiStreamingRequest { Message = "BiStreaming request " + DateTime.Now.ToString() });
+                count++;
+                _resetEvent.Reset();
+            }
+
+            await call.RequestStream.CompleteAsync();
+            Responses.Items.Add("Disconnected");
+            await readTask;
+        }
+
+        
+        private void BiStreamSendButton_Click(object sender, RoutedEventArgs e)
+        {
+            _resetEvent.Set();
         }
     }
 }

@@ -7,6 +7,7 @@ package streaming;
 service StreamingService {
 	rpc ServerStreaming (ServerStreamRequest) returns (stream ServerStreamResponse);
 	rpc ClientStreaming (stream ClientStreamRequest) returns (ClientStreamResponse);
+	rpc BiStreaming (stream BiStreamingRequest) returns (stream BiStreamingResponse);
 }
 
 message ServerStreamRequest {
@@ -23,5 +24,13 @@ message ClientStreamRequest {
 }
 
 message ClientStreamResponse {
+	string message = 1;
+}
+
+message BiStreamingRequest {
+	string message = 1;
+}
+
+message BiStreamingResponse {
 	string message = 1;
 }
