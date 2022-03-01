@@ -26,15 +26,34 @@ namespace GrpcPracticeClient
             _channel = GrpcChannel.ForAddress("http://localhost:5000");
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
             GreeterClient client = new GreeterClient(_channel);
 
-            var response = client.SayHello(
+            Metadata entries = new Metadata();
+            entries.Add(new Metadata.Entry("request_header", "Say hello!!!!"));
+
+            var call = client.SayHelloAsync(
                 new HelloRequest
                 {
                     Name = name.Text
-                });
+                },
+                headers: entries);
+
+            var headers = await call.ResponseHeadersAsync;
+            var h = headers.GetEnumerator();
+            while (h.MoveNext())
+            {
+                MessageBox.Show($"response header key:{h.Current.Key} value:{h.Current.Value}");
+            }
+
+            var response = await call.ResponseAsync;
+            var trailers = call.GetTrailers();
+            var t = trailers.GetEnumerator();
+            while (t.MoveNext())
+            {
+                MessageBox.Show($"response trailer key:{t.Current.Key} value:{t.Current.Value}");
+            }
 
             MessageBox.Show(response.Message);
         }

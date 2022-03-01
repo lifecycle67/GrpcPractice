@@ -15,6 +15,11 @@ namespace GrpcPracticeServer.Services
         {
             string ret = $"Hello {request.Name} {Guid.NewGuid()}";
             Console.WriteLine("Greeter service SayHello response : " + ret);
+            Console.WriteLine("========= print request headers ==========");
+            context.RequestHeaders.ToList().ForEach(e => Console.WriteLine(e.Key + " " + e.Value));
+            
+            context.ResponseTrailers.Add("response_trailer", "Check this out");
+
             return Task.FromResult(new HelloReply
             {
                 Message = ret
