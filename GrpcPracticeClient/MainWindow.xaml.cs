@@ -58,20 +58,39 @@ namespace GrpcPracticeClient
             MessageBox.Show(response.Message);
         }
 
+        CancellationTokenSource _cts;
+        AsyncServerStreamingCall<ServerStreamResponse> _call;
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var client = new StreamingServiceClient(_channel);
-
-            using var call = client.ServerStreaming(
-                new ServerStreamRequest
-                {
-                    Name = name.Text
-                });
-
-            await foreach (var response in call.ResponseStream.ReadAllAsync())
+            try
             {
-                Responses.Items.Add(response.Message);
+                var client = new StreamingServiceClient(_channel);
+
+                _cts = new CancellationTokenSource();
+                _call = client.ServerStreaming(
+                    new ServerStreamRequest
+                    {
+                        Name = name.Text
+                    },
+                    deadline: DateTime.UtcNow.AddSeconds(5),
+                    cancellationToken: _cts.Token);
+
+                await foreach (var response in _call.ResponseStream.ReadAllAsync())
+                {
+                    Responses.Items.Add(response.Message);
+                }
+                _call.Dispose();
             }
+            catch (RpcException ex)
+            {
+                //deadline 초과
+                if (ex.StatusCode == StatusCode.DeadlineExceeded)
+                    MessageBox.Show(ex.Message);
+                //호출 취소
+                else if (ex.StatusCode == StatusCode.Cancelled)
+                    MessageBox.Show(ex.Message);
+            }
+            catch { }
         }
 
         private async void ClientStreamButton_Click(object sender, RoutedEventArgs e)
@@ -123,6 +142,12 @@ namespace GrpcPracticeClient
         private void BiStreamSendButton_Click(object sender, RoutedEventArgs e)
         {
             _resetEvent.Set();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            _cts.Cancel();
+            //_call.Dispose();
         }
     }
 }

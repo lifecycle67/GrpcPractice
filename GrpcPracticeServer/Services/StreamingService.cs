@@ -15,6 +15,12 @@ namespace GrpcPracticeServer.Services
         {
             for (int i = 0; i < 10; i++)
             {
+                if (context.CancellationToken.IsCancellationRequested)
+                {
+                    Console.WriteLine("request cancelled");
+                    break;
+                }
+
                 string message = $"{request.Name} - response time : {DateTime.Now}";
                 Console.WriteLine(message);
 
