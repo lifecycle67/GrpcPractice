@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
+using Grpc.Net.Client.Configuration;
 using Microsoft.VisualStudio.Threading;
 using Protos.Greet;
 using Protos.Streaming;
@@ -23,39 +24,64 @@ namespace GrpcPracticeClient
         public MainWindow()
         {
             InitializeComponent();
-            _channel = GrpcChannel.ForAddress("http://localhost:5000");
+
+            var defaultMethodConfig = new MethodConfig
+            {
+                Names = { MethodName.Default }, //MethodName.Default는 해당 채널에서 호출하는 모든 메서드에 적용됨
+                RetryPolicy = new RetryPolicy
+                {
+                    MaxAttempts = 5, //원래 시도를 포함한 최대 호출 시도 횟수입니다
+                    InitialBackoff = TimeSpan.FromSeconds(2), //다시 시도까지의 지연 시간의 초기값. 지연 시간은 0에서 설정 지연 시간사이에서 임의로 결정됨
+                    MaxBackoff = TimeSpan.FromSeconds(10), //최대 지연 시간.
+                    BackoffMultiplier = 2, //다시 시도할 때 마다 지연 시간에서 이 값을 곱함.
+                    RetryableStatusCodes = { StatusCode.DeadlineExceeded, StatusCode.Unavailable } //재시도할 상태 코드
+                }
+            };
+
+            _channel = GrpcChannel.ForAddress("http://localhost:5000", new GrpcChannelOptions
+            {
+                ServiceConfig = new ServiceConfig { MethodConfigs = { defaultMethodConfig } }
+            });
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            GreeterClient client = new GreeterClient(_channel);
-
-            Metadata entries = new Metadata();
-            entries.Add(new Metadata.Entry("request_header", "Say hello!!!!"));
-
-            var call = client.SayHelloAsync(
-                new HelloRequest
-                {
-                    Name = name.Text
-                },
-                headers: entries);
-
-            var headers = await call.ResponseHeadersAsync;
-            var h = headers.GetEnumerator();
-            while (h.MoveNext())
+            try
             {
-                MessageBox.Show($"response header key:{h.Current.Key} value:{h.Current.Value}");
-            }
+                GreeterClient client = new GreeterClient(_channel);
 
-            var response = await call.ResponseAsync;
-            var trailers = call.GetTrailers();
-            var t = trailers.GetEnumerator();
-            while (t.MoveNext())
+                Metadata entries = new Metadata();
+                entries.Add(new Metadata.Entry("request_header", "Say hello!!!!"));
+
+                var call = client.SayHelloAsync(
+                    new HelloRequest
+                    {
+                        Name = name.Text
+                    },
+                    headers: entries);
+                
+                //var headers = await call.ResponseHeadersAsync;
+                //var h = headers.GetEnumerator();
+                //while (h.MoveNext())
+                //{
+                //    MessageBox.Show($"response header key:{h.Current.Key} value:{h.Current.Value}");
+                //}
+
+                var response = await call.ResponseAsync;
+                //var trailers = call.GetTrailers();
+                //var t = trailers.GetEnumerator();
+                //while (t.MoveNext())
+                //{
+                //    MessageBox.Show($"response trailer key:{t.Current.Key} value:{t.Current.Value}");
+                //}
+
+                MessageBox.Show(response.Message);
+            }
+            catch (RpcException ex)
             {
-                MessageBox.Show($"response trailer key:{t.Current.Key} value:{t.Current.Value}");
+                if (ex.StatusCode == StatusCode.Unavailable)
+                    MessageBox.Show(ex.Message);
             }
-
-            MessageBox.Show(response.Message);
         }
 
         CancellationTokenSource _cts;
