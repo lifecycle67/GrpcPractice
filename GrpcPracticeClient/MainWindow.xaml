@@ -18,11 +18,11 @@
             <RowDefinition Height="29.367"/>
             <RowDefinition Height="270.633"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Height="20" Width="260">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" Grid.Column="0" Grid.ColumnSpan="2">
             <TextBox x:Name="name" Text="HI" Width="150"/>
             <Button Content="call greet" Width="100" Margin="10 0 0 0" Click="Button_Click"/>
         </StackPanel>
-        <ListBox Grid.Row="1" Grid.Column="0" Grid.RowSpan="4" x:Name="Responses" Margin="0,10,0,10" />
+        <ListBox Grid.Row="1" Grid.Column="0" Grid.RowSpan="4" x:Name="Responses" Margin="0,10,0,10" Width="260" />
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Height="20">
             <Button Content="call server stream" Margin="10 0 0 0"  Click="Button_Click_1" VerticalAlignment="Top"/>
             <Button x:Name="ClientStreamButton" Margin="10 0 0 0" VerticalAlignment="Top" Content="call client stream" Click="ClientStreamButton_Click"/>
