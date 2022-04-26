@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "Protos.Authenticate";
+
+package authenticate;
+
+service JwtAuthenticator {
+  rpc Auth (AuthRequest) returns (AuthResponse);
+}
+
+message AuthRequest {
+  string name = 1;
+}
+
+message AuthResponse {
+  string token = 1;
+}

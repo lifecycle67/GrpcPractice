@@ -1,6 +1,7 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.Threading;
 using Protos.Greet;
 using Protos.Streaming;
@@ -75,7 +76,12 @@ namespace GrpcPracticeClient
         {
             try
             {
-                GreeterClient client = new GreeterClient(Channel);
+                var app = App.Current as App;
+                if (app == null) return;
+
+                var client = app.Services.GetRequiredService<GreeterClient>(); //서비스 컨테이너를 통해 인증 인터셉터가 구성된 클라이언트 인스턴스를 가져옵니다
+
+                //GreeterClient client = new GreeterClient(Channel);
 
                 Metadata entries = new Metadata();
                 entries.Add(new Metadata.Entry("request_header", "Say hello!!!!"));

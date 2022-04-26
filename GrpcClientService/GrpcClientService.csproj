@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\authenticate.proto" />
     <None Remove="Protos\greet.proto" />
     <None Remove="Protos\streaming.proto" />
   </ItemGroup>
@@ -21,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="Protos\authenticate.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\greet.proto">
       <GrpcServices>Client</GrpcServices>
     </Protobuf>

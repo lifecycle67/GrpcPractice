@@ -48,6 +48,7 @@ app.UseAuthorization();
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GreeterService>();
 app.MapGrpcService<StreamingService>();
+app.MapGrpcService<JwtAuthService>();
 
 app.MapGet("/generateJwtToken", async context =>
 {
