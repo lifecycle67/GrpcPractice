@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GrpcClientService\GrpcClientService.csproj" />
+    <ProjectReference Include="..\GrpcClientService\Protos.csproj" />
   </ItemGroup>
 
 </Project>

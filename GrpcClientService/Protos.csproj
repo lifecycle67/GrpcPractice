@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\authenticate.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\authenticate.proto" GrpcServices="Both" />
     <Protobuf Include="Protos\greet.proto">
-      <GrpcServices>Client</GrpcServices>
+      <GrpcServices>Both</GrpcServices>
     </Protobuf>
-    <Protobuf Include="Protos\streaming.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\streaming.proto" GrpcServices="Both" />
   </ItemGroup>
 
 </Project>
