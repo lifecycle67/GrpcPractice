@@ -49,6 +49,7 @@ app.UseAuthorization();
 app.MapGrpcService<GreeterService>();
 app.MapGrpcService<StreamingService>();
 app.MapGrpcService<JwtAuthService>();
+app.MapGrpcService<BlockingService>();
 
 app.MapGet("/generateJwtToken", async context =>
 {

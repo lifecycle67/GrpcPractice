@@ -1,0 +1,26 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Protos.Blocking";
+
+package blocking;
+
+service BlockingService {
+	rpc GetException (ExceptionRequest) returns (ExceptionResponse);
+	rpc LongtermDelay (LongtermDelayRequest) returns (LongtermDelayResponse);
+}
+
+message ExceptionRequest {
+	string message = 1;
+}
+
+message ExceptionResponse {
+	string message = 1;
+}
+
+message LongtermDelayRequest {
+	string message = 1;
+}
+
+message LongtermDelayResponse {
+	string message = 1;
+}

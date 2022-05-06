@@ -27,6 +27,7 @@
             <Button Content="call server stream" Margin="10 0 0 0"  Click="ServerStreamButton_Click" VerticalAlignment="Top"/>
             <Button x:Name="ClientStreamButton" Margin="10 0 0 0" VerticalAlignment="Top" Content="call client stream" Click="ClientStreamButton_Click"/>
             <Button x:Name="BiStreamCallButton" Margin="10 0 0 0" VerticalAlignment="Top" Content="call bidirection stream" Click="BiStreamButton_Click"/>
+            <Button Margin="10 0 0 0" Content="call block" Click="BlockButton_Click"/>
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="20">
             <Button x:Name="BiStreamSendButton" Margin="10 0 0 0" VerticalAlignment="Top" Content="send bidirection stream" Click="BiStreamSendButton_Click"/>

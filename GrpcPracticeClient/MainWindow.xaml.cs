@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using static Protos.Blocking.BlockingService;
 using static Protos.Greet.Greeter;
 using static Protos.Streaming.StreamingService;
 
@@ -52,6 +53,7 @@ namespace GrpcPracticeClient
                         ServiceConfig = new ServiceConfig
                         {
                             ///재시도 정책 구성
+                            ///지연 시간은 0에서 설정 지연 시간에서 임의로 결정됨
                             MethodConfigs =
                             {
                                 new MethodConfig
@@ -60,7 +62,7 @@ namespace GrpcPracticeClient
                                     RetryPolicy = new RetryPolicy
                                     {
                                         MaxAttempts = 5, //원래 시도를 포함한 최대 호출 시도 횟수입니다
-                                        InitialBackoff = TimeSpan.FromSeconds(2), //다시 시도까지의 지연 시간의 초기값. 지연 시간은 0에서 설정 지연 시간사이에서 임의로 결정됨
+                                        InitialBackoff = TimeSpan.FromSeconds(2), //다시 시도까지의 지연 시간의 초기값. 
                                         MaxBackoff = TimeSpan.FromSeconds(10), //최대 지연 시간.
                                         BackoffMultiplier = 2, //다시 시도할 때 마다 지연 시간에서 이 값을 곱함.
                                         RetryableStatusCodes = { StatusCode.DeadlineExceeded, StatusCode.Unavailable } //재시도할 상태 코드
@@ -234,6 +236,22 @@ namespace GrpcPracticeClient
             ///서버스트리밍 서비스 실행을 취소 합니다
             if (_serverStreamingCts != null)
                 _serverStreamingCts.Cancel();
+        }
+
+        /// <summary>
+        /// 실패하는 요청을 전송하고 재요청 실행을 확인한다
+        /// </summary>
+        private void BlockButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var client = new BlockingServiceClient(Channel);
+                client.GetException(new Protos.Blocking.ExceptionRequest { Message = "" });
+            }
+            catch (RpcException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>
