@@ -23,7 +23,7 @@ examples for practice with grpc-dotnet
 - 인터셉터 구성
 - 클라이언트 팩토리 주입
 
-##References
+## References
 - https://docs.microsoft.com/ko-kr/aspnet/core/grpc/?view=aspnetcore-5.0
 - https://docs.microsoft.com/ko-kr/dotnet/architecture/grpc-for-wcf-developers/grpc-overview
 - https://github.com/grpc/grpc-dotnet/tree/master/examples
